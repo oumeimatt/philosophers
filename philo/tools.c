@@ -6,7 +6,7 @@
 /*   By: oel-yous <oel-yous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/07 11:41:09 by oel-yous          #+#    #+#             */
-/*   Updated: 2021/09/07 14:33:08 by oel-yous         ###   ########.fr       */
+/*   Updated: 2021/09/14 11:31:36 by oel-yous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,52 +46,19 @@ long	ft_atoi(char *str)
 	return (r);
 }
 
-void	ft_putchar_fd(char c, int fd)
+void	ft_display(char *msg, t_philo *philosopher)
 {
-	write(fd, &c, 1);
+	pthread_mutex_lock(&philosopher->args->write);
+	printf("%lld : philosopher %d %s \n",
+		get_time() - philosopher->args->curr_time, philosopher->philo_id, msg);
+	if (msg[0] != 'd')
+		pthread_mutex_unlock(&philosopher->args->write);
 }
 
-void	ft_putendl_fd(char *s, int fd)
+long long	get_time(void)
 {
-	int	i;
+	struct timeval	tv;
 
-	i = 0;
-	while (s[i] != '\0')
-	{
-		ft_putchar_fd(s[i], fd);
-		i++;
-	}
-	ft_putchar_fd('\n', fd);
-}
-
-void    ft_putstr_fd(char *str, int fd)
-{
-	int     i;
-
-	i = 0;
-	while(str[i] !='\0')
-	{
-		ft_putchar_fd(str[i], fd);
-		i++;
-	}
-}
-
-void	ft_putnbr_fd(int n, int fd)
-{
-	unsigned int	nbr;
-
-	if (n < 0)
-	{
-		ft_putchar_fd('-', fd);
-		nbr = -n;
-	}
-	else
-		nbr = n;
-	if (nbr >= 10)
-	{
-		ft_putnbr_fd(nbr / 10, fd);
-		ft_putnbr_fd(nbr % 10, fd);
-	}
-	else
-		ft_putchar_fd(nbr + '0', fd);
+	gettimeofday(&tv, NULL);
+	return ((((long long)tv.tv_sec) * 1000) + (tv.tv_usec / 1000));
 }
